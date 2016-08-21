@@ -6,14 +6,14 @@
 	
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</pattern>
         </encoder>
     </appender>
 
-      <logger name="com.qy" level="INFO" additivity="false">
+    <!--   <logger name="cn.leepon" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
       </logger>
-    <root level="INFO">
+ -->    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
