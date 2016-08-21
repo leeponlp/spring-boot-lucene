@@ -52,13 +52,7 @@ public class LuceneUtil {
 
 	// 索引目录
 	public static Directory getDirectory() {
-		Directory fsdir = null;
-		try {
-			fsdir = FSDirectory.open(new File("index"));
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return fsdir;
+		return directory;
 	}
 
 	// 分词器
@@ -89,8 +83,7 @@ public class LuceneUtil {
 	public static IndexWriter getIndexWriter() {
 		IndexWriter indexWriter = null;
 		try {
-			IndexWriterConfig iwc = new IndexWriterConfig(version, analyzer);
-			iwc.setOpenMode(OpenMode.CREATE);
+			IndexWriterConfig iwc = getIndexWriterConfig();
 			indexWriter = new IndexWriter(directory, iwc);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
