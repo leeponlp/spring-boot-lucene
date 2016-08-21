@@ -282,6 +282,7 @@ public class LuceneUtil {
 		return doclist;
 	}
 
+	
 	/**
 	 * 
 	 * @Title: pageQuery 
@@ -306,11 +307,15 @@ public class LuceneUtil {
 			if (begin > topDocs.totalHits) {
 				throw new Exception("pageQueryException:起始位置大于总记录数");
 			}
-			// 查询终止记录位置
-			int end = Math.min(begin + limit, topDocs.totalHits);
+			
+			ScoreDoc scoreDoc=null;  
+			if (begin >0) {
+				scoreDoc = scoreDocs[begin-1];
+			}
+			TopDocs hits = indexSearcher.searchAfter(scoreDoc, query, limit);
 
-			for (int i = start; i < end; i++) {
-				int doc = scoreDocs[i-1].doc;
+			for (int i = 0; i < hits.scoreDocs.length; i++) {
+				int doc = hits.scoreDocs[i].doc;
 				Document document = indexSearcher.doc(doc);
 				doclist.add(document);
 			}
@@ -336,7 +341,7 @@ public class LuceneUtil {
 		if (start <= 0)start = 1;
 		try {
 			IndexSearcher indexSearcher = getIndexSearcher();
-			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE, sort);
+			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE,sort);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
 
@@ -345,11 +350,15 @@ public class LuceneUtil {
 			if (begin > topDocs.totalHits) {
 				throw new Exception("pageQueryException:起始位置大于总记录数");
 			}
-			// 查询终止记录位置
-			int end = Math.min(begin + limit, topDocs.totalHits);
+			
+			ScoreDoc scoreDoc=null;  
+			if (begin >0) {
+				scoreDoc = scoreDocs[begin-1];
+			}
+			TopDocs hits = indexSearcher.searchAfter(scoreDoc, query, limit);
 
-			for (int i = start; i < end; i++) {
-				int doc = scoreDocs[i-1].doc;
+			for (int i = 0; i < hits.scoreDocs.length; i++) {
+				int doc = hits.scoreDocs[i].doc;
 				Document document = indexSearcher.doc(doc);
 				doclist.add(document);
 			}
@@ -358,6 +367,8 @@ public class LuceneUtil {
 		}
 		return doclist;
 	}
+	
+	
 
 	// 提交IndexWriter
 	public static void commit(IndexWriter writer) {
