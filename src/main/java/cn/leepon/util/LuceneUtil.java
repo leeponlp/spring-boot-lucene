@@ -39,12 +39,18 @@ public class LuceneUtil {
 	private static Version version;
 
 	private static Analyzer analyzer;
+	
+	private static IndexReader indexReader;
+	
+	private static IndexSearcher indexSearcher;
 
 	static {
 		try {
 			directory = FSDirectory.open(new File("index"));
 			version = Version.LUCENE_36;
 			analyzer = new IKAnalyzer();
+			indexReader = IndexReader.open(directory);
+			indexSearcher = new IndexSearcher(indexReader);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -70,13 +76,13 @@ public class LuceneUtil {
 	
 	//提供获取IndexReader对象
 	public static IndexReader getIndexReader(){
-		IndexReader reader = null;
-		try {
-			reader = IndexReader.open(directory);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return reader;
+//		IndexReader reader = null;
+//		try {
+//			reader = IndexReader.open(directory);
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		return indexReader;
 	}
 
 	// 提供获取IndexWriter对象
@@ -93,7 +99,8 @@ public class LuceneUtil {
 
 	// 获得查询IndexSeacher对象
 	public static IndexSearcher getIndexSearcher(){
-		return new IndexSearcher(getIndexReader());
+		return indexSearcher;
+		//return new IndexSearcher(getIndexReader());
 	}
 
 	/**
@@ -216,7 +223,7 @@ public class LuceneUtil {
 	public static int searchTotalRecord(Query query) {
 		ScoreDoc[] docs = null;
 		try {
-			IndexSearcher indexSearcher = getIndexSearcher();
+			//IndexSearcher indexSearcher = getIndexSearcher();
 			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE);
 			if (topDocs == null || topDocs.scoreDocs == null || topDocs.scoreDocs.length == 0) {
 				return 0;
@@ -240,7 +247,7 @@ public class LuceneUtil {
 	public static List<Document> searchRows(Query query){
 		List<Document> doclist = new ArrayList<>();
 		try {
-			IndexSearcher indexSearcher = getIndexSearcher();
+			//IndexSearcher indexSearcher = getIndexSearcher();
 			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
@@ -267,7 +274,7 @@ public class LuceneUtil {
 	public static List<Document> searchRows(Query query,Sort sort){
 		List<Document> doclist = new ArrayList<>();
 		try {
-			IndexSearcher indexSearcher = getIndexSearcher();
+			//IndexSearcher indexSearcher = getIndexSearcher();
 			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE,sort);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
@@ -297,7 +304,7 @@ public class LuceneUtil {
 		List<Document> doclist = new ArrayList<>();
 		if (start <= 0)start = 1;
 		try {
-			IndexSearcher indexSearcher = getIndexSearcher();
+			//IndexSearcher indexSearcher = getIndexSearcher();
 			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
@@ -340,7 +347,7 @@ public class LuceneUtil {
 		List<Document> doclist = new ArrayList<>();
 		if (start <= 0)start = 1;
 		try {
-			IndexSearcher indexSearcher = getIndexSearcher();
+			//IndexSearcher indexSearcher = getIndexSearcher();
 			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE,sort);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
