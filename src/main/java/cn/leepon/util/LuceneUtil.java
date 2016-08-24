@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+//import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -49,6 +50,7 @@ public class LuceneUtil {
 			directory = FSDirectory.open(new File("index"));
 			version = Version.LUCENE_36;
 			analyzer = new IKAnalyzer();
+			//analyzer = new StandardAnalyzer(version);
 			indexReader = IndexReader.open(directory);
 			indexSearcher = new IndexSearcher(indexReader);
 		} catch (Exception e) {
@@ -76,12 +78,7 @@ public class LuceneUtil {
 	
 	//提供获取IndexReader对象
 	public static IndexReader getIndexReader(){
-//		IndexReader reader = null;
-//		try {
-//			reader = IndexReader.open(directory);
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//		}
+
 		return indexReader;
 	}
 
@@ -100,7 +97,6 @@ public class LuceneUtil {
 	// 获得查询IndexSeacher对象
 	public static IndexSearcher getIndexSearcher(){
 		return indexSearcher;
-		//return new IndexSearcher(getIndexReader());
 	}
 
 	/**
@@ -133,7 +129,7 @@ public class LuceneUtil {
 	 * @return void 
 	 * @throws
 	 */
-	public static void rebuildAllIndex(List<Document> doclist) {
+	public static void buildAllIndex(List<Document> doclist) {
 		IndexWriter writer = null;
 		try {
 			writer = getIndexWriter();
@@ -248,7 +244,8 @@ public class LuceneUtil {
 		List<Document> doclist = new ArrayList<>();
 		try {
 			//IndexSearcher indexSearcher = getIndexSearcher();
-			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE);
+			//默认取得分最高的前10条记录
+			TopDocs topDocs = indexSearcher.search(query,1);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
 			for (ScoreDoc scoreDoc : scoreDocs) {
@@ -275,7 +272,8 @@ public class LuceneUtil {
 		List<Document> doclist = new ArrayList<>();
 		try {
 			//IndexSearcher indexSearcher = getIndexSearcher();
-			TopDocs topDocs = indexSearcher.search(query, Integer.MAX_VALUE,sort);
+			//默认取得分最高的前10条记录
+			TopDocs topDocs = indexSearcher.search(query,10,sort);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			logger.info("搜索结果 " + topDocs.totalHits + "条");
 			for (ScoreDoc scoreDoc : scoreDocs) {

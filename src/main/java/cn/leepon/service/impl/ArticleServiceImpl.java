@@ -41,7 +41,7 @@ public class ArticleServiceImpl implements ArticleService {
 			document.add(new Field("status", article.getStatus()+"", Store.YES, Index.NOT_ANALYZED));
 			doclist.add(document);
 		}
-		LuceneUtil.rebuildAllIndex(doclist); 
+		LuceneUtil.buildAllIndex(doclist); 
 	}
 
 	@Override
